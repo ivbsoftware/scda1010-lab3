@@ -89,7 +89,7 @@ nursery_data$health <- factor(nursery_data$health,levels(nursery_data$health)[c(
 nursery_data$class <- factor(nursery_data$class,levels(nursery_data$class)[c(1,3,5,2,4)])
 ```
 
-Corrected levels, now correspont to the dataset description
+Corrected levels, now correspond to the dataset description
 ```{r}
 print (levels(nursery_data$parents))
 print (levels(nursery_data$has_nurs))
@@ -109,7 +109,7 @@ data <- data.matrix(nursery_data)
 head(data)
 ```
 
-## Preparing scaled dataand split into train and test
+## Preparing scaled data and split into train and test
 ```{r}
 index <- sample(1:nrow(data),round(0.75*nrow(data)))
 #index <- createDataPartition(y= data$QLT, p=0.5, list = FALSE)
@@ -118,6 +118,19 @@ mins <- apply(data, 2, min)
 scaled <- as.data.frame(scale(data, center = mins, scale = maxs - mins))
 train_ <- scaled[index,]
 test_ <- scaled[-index,]
+```
+
+# The problem
+
+## Distribution of target value in the dataset
+The target value class of the wine quality is not equally distributed. The Figure \ref{fig:hist_class} demonstrates the distribution. As we can see, dataset covers mostly medium-quality wines with QLT between 5 and 7 well, low and high  quality wines represented poorly.
+```{r}
+prop.table(table(nursery_data$class))
+```
+
+
+```{r hist_class, fig.pos = 'h', fig.height=3, fig.width=5, fig.align="center", fig.cap="Distribution the Target 'class' Attribute in the Nursery Dataset"}
+ggplot(data = nursery_data, mapping = aes(x = class)) + geom_bar()
 ```
 
 # Clustering
@@ -181,21 +194,37 @@ We use the Euclidean distance as an input for the clustering algorithm
 ward.2D minimum variance criterion minimizes the total within-cluster variance:
 
 ```{r}
-d <- dist(scaled, method = "euclidean")
+d <- dist(scaled, method = "manhattan")
 H.fit <- hclust(d, method="ward.D2")
 ```
 
 The clustering output can be displayed in a dendrogram
 
-```{r dendr, fig.height=8, fig.width=8}
-clusters_num = 12
+```{r dendr, fig.hight=8, fig.width=8}
+clusters_num = 20
 plot(H.fit)
 groups <- cutree(H.fit, k=clusters_num)
 rect.hclust(H.fit, k=clusters_num, border="red") 
 ```
 
-The clustering performance can be evaluated with the aid of a confusion matrix as follows:
+The clustering performance can be evaluated with the aid of a confusion matrix as follows. Let's look at the groups that have mixed valued of 'class'. Group 1 contains class 'recommend' and also 'very_recom' and 'priority'. Since our idea is relable rows to 'recommend' to increase it's presense, let's check if there is any justification to do this.
+
 
 ```{r}
 table(nursery_data$class,groups)
+```
+
+
+Let's find what are the most significant factors that separate group 1 from also mixed group 5. It looks that group a has less vavorable financial situation. We could arbitrary say that it is justified for relable group 1 down grading it to 'recommend' even thogh most of therows were previouslbeen labeled higher.
+```{r}
+dif <- colMeans(scaled[groups == 1,]) - colMeans(scaled[groups == 5,])
+dif <- dif[order(abs(dif), decreasing = T)]
+print(dif)
+```
+
+Group 5 has significant amount of 'very_recommend' values in addition to 'priority'. Let's find what are the most significant factors that separate group 5 from also mixed group 8. It looks that group a has more vavorable financial situation. We could arbitrary say that it is justified for relable group 1 down grading it to 'recommend' even thogh most of therows were previouslbeen labeled higher.
+```{r}
+dif <- colMeans(scaled[groups == 5,]) - colMeans(scaled[groups == 9,])
+dif <- dif[order(abs(dif), decreasing = T)]
+print(dif)
 ```
