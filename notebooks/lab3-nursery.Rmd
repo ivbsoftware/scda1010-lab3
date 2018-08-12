@@ -1,0 +1,106 @@
+---
+title: 'CSDA1010SUMA18 - LAB EXERCISE 1: Classification Problem'
+output:
+  html_document:
+    df_print: paged
+  html_notebook: default
+  pdf_document: default
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+```{r}
+library(readr)
+library(dplyr)
+library(ggplot2)
+library(rpart)
+library(rpart.plot)
+library(Amelia)
+library(rattle)
+library(RColorBrewer)
+library(caret)
+```
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+
+## Nursery Data Set reference and short description
+
+Source: http://archive.ics.uci.edu/ml/datasets/Nursery
+
+```
+| class values
+
+not_recom, recommend, very_recom, priority, spec_prior
+
+| attributes
+
+parents:     usual, pretentious, great_pret.
+has_nurs:    proper, less_proper, improper, critical, very_crit.
+form:        complete, completed, incomplete, foster.
+children:    1, 2, 3, more.
+housing:     convenient, less_conv, critical.
+finance:     convenient, inconv.
+social:      nonprob, slightly_prob, problematic.
+health:      recommended, priority, not_recom.
+```
+
+
+```{r}
+nursery_data <- read.csv("http://archive.ics.uci.edu/ml/machine-learning-databases/nursery/nursery.data", header = FALSE, col.names = c("parents","has_nurs","form","children","housing","finance","social","health","class"))
+
+# nursery_data <- read.csv(file = "../data/nursery_data.csv")
+```
+
+## Data Set exploration and cleaning
+```{r}
+set.seed(77)
+dim(nursery_data)
+head(nursery_data)
+```
+
+
+# Splitting the dataset into train and test based on outcome (class)
+# The Nursing dataset has the following distribution of outcome parameter:
+```{r}
+prop.table((table(nursery_data$class)))
+```
+
+# We are splitting the dataset in such a way, that train and test sets would have similar distribution of the 'class' attribute
+```{r}
+train.rows<- createDataPartition(y= nursery_data$class, p=0.9, list = FALSE)
+train.data<- nursery_data[train.rows,]
+prop.table((table(train.data$class)))
+```
+# Distribution of class depended on health
+```{r}
+wssplot <- function(data, nc=15, seed=1234){
+  wss <- (nrow(data)-1)*sum(apply(data,2,var))
+  for (i in 2:nc){
+    set.seed(seed)
+    wss[i] <- sum(kmeans(data, centers=i)$withinss)}
+  plot(1:nc, wss, type="b", xlab="Number of Clusters",
+       ylab="Within groups sum of squares")}
+
+wssplot(train.data, nc=10) 
+
+```
+```{r  fig.height=10, fig.width=10}
+is.na(train.data)
+```
+```{r  fig.height=10, fig.width=10}
+clusters_num = 4
+k.means.fit <- kmeans(train.data, clusters_num,iter.max = 1000)
+# attributes(k.means.fit)
+k.means.fit$centers
+# plot(k.means.fit$centers[,c("RS","ALC")])
+# k.means.fit$cluster
+k.means.fit$size
+pairs(~ALC+RS+pH+DEN, data=k.means.fit$centers)
+```
+
