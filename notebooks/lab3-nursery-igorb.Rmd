@@ -1,14 +1,14 @@
 ---
 title: 'CSDA1010SUMA18 - LAB EXERCISE 3: Classification Problem'
 output:
+  pdf_document: default
+  html_notebook: default
   html_document:
     df_print: paged
-  html_notebook: default
-  pdf_document: default
 ---
 
 
-```{r}
+```{r message=FALSE, warning=FALSE}
 library(readr)
 library(dplyr)
 library(ggplot2)
@@ -42,14 +42,14 @@ health:      recommended, priority, not_recom.
 ```
 
 
-```{r}
+```{r message=FALSE, warning=FALSE}
 nursery_data <- read.csv("http://archive.ics.uci.edu/ml/machine-learning-databases/nursery/nursery.data", header = FALSE, col.names = c("parents","has_nurs","form","children","housing","finance","social","health","class"))
 
 # nursery_data <- read.csv(file = "../data/nursery_data.csv")
 ```
 
 # Data Set exploration and cleaning
-```{r}
+```{r message=FALSE, warning=FALSE}
 set.seed(77)
 dim(nursery_data)
 #head(nursery_data)
@@ -124,11 +124,11 @@ test_ <- scaled[-index,]
 
 A fundamental question is how to determine the value of the parameter k. 
 If we looks at the percentage of variance explained as a function of the number of clusters: 
-One should choose a number of clusters so that adding another cluster doesnât give much better 
+One should choose a number of clusters so that adding another cluster doesn't give much better 
 modeling of the data. More precisely, if one plots the percentage of variance explained by the 
 clusters against the number of clusters, the first clusters will add much information 
 (explain a lot of variance), but at some point the marginal gain will drop, 
-giving an angle in the graph. The number of clusters is chosen at this point, hence the âelbow criterionâ.
+giving an angle in the graph. The number of clusters is chosen at this point, hence the 'elbow criterion'.
 
 ```{r}
 wssplot <- function(data, nc=15, seed=1234){
