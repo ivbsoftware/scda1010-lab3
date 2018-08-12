@@ -1,0 +1,201 @@
+---
+title: 'CSDA1010SUMA18 - LAB EXERCISE 3: Classification Problem'
+output:
+  html_document:
+    df_print: paged
+  html_notebook: default
+  pdf_document: default
+---
+
+
+```{r}
+library(readr)
+library(dplyr)
+library(ggplot2)
+library(rpart)
+library(rpart.plot)
+library(Amelia)
+library(rattle)
+library(RColorBrewer)
+library(caret)
+```
+
+# Nursery Data Set reference and short description
+
+Source: http://archive.ics.uci.edu/ml/datasets/Nursery
+
+```
+| class values
+
+not_recom, recommend, very_recom, priority, spec_prior
+
+| attributes
+
+parents:     usual, pretentious, great_pret.
+has_nurs:    proper, less_proper, improper, critical, very_crit.
+form:        complete, completed, incomplete, foster.
+children:    1, 2, 3, more.
+housing:     convenient, less_conv, critical.
+finance:     convenient, inconv.
+social:      nonprob, slightly_prob, problematic.
+health:      recommended, priority, not_recom.
+```
+
+
+```{r}
+nursery_data <- read.csv("http://archive.ics.uci.edu/ml/machine-learning-databases/nursery/nursery.data", header = FALSE, col.names = c("parents","has_nurs","form","children","housing","finance","social","health","class"))
+
+# nursery_data <- read.csv(file = "../data/nursery_data.csv")
+```
+
+# Data Set exploration and cleaning
+```{r}
+set.seed(77)
+dim(nursery_data)
+#head(nursery_data)
+#str(nursery_data)
+
+```
+
+## Coding for categorical variables
+
+## Reorder factors
+
+Very often, especially when plotting data, we need to reorder the levels of a factor because the default order is alphabetical. A direct way of reordering, using standard syntax is as follows.
+
+Current levels, need to be corrected to correspont to the dataset description
+```{r}
+print (levels(nursery_data$parents))
+print (levels(nursery_data$has_nurs))
+print (levels(nursery_data$form))
+print (levels(nursery_data$children))
+print (levels(nursery_data$housing))
+print (levels(nursery_data$finance))
+print (levels(nursery_data$social))
+print (levels(nursery_data$health))
+print (levels(nursery_data$class))
+```
+
+Correction:
+```{r}
+nursery_data$parents <- factor(nursery_data$parents,levels(nursery_data$parents)[c(3,2,1)])
+nursery_data$has_nurs <- factor(nursery_data$has_nurs,levels(nursery_data$has_nurs)[c(4,3,2,1,5)])
+nursery_data$form <- factor(nursery_data$form,levels(nursery_data$form)[c(1,2,4,3)])
+nursery_data$children <- factor(nursery_data$children,levels(nursery_data$children)[c(1,2,3,4)])
+nursery_data$housing <- factor(nursery_data$housing,levels(nursery_data$housing)[c(1,3,2)])
+nursery_data$finance <- factor(nursery_data$finance,levels(nursery_data$finance)[c(1,2)])
+nursery_data$social <- factor(nursery_data$social,levels(nursery_data$social)[c(1,3,2)])
+nursery_data$health <- factor(nursery_data$health,levels(nursery_data$health)[c(1,3,2)])
+nursery_data$class <- factor(nursery_data$class,levels(nursery_data$class)[c(1,3,5,2,4)])
+```
+
+Corrected levels, now correspont to the dataset description
+```{r}
+print (levels(nursery_data$parents))
+print (levels(nursery_data$has_nurs))
+print (levels(nursery_data$form))
+print (levels(nursery_data$children))
+print (levels(nursery_data$housing))
+print (levels(nursery_data$finance))
+print (levels(nursery_data$social))
+print (levels(nursery_data$health))
+print (levels(nursery_data$class))
+```
+
+## Convert to numbers in one step
+[Ref] (https://stackoverflow.com/questions/47922184/convert-categorical-variables-to-numeric-in-r)
+```{r}
+data <- data.matrix(nursery_data)
+head(data)
+```
+
+## Preparing scaled dataand split into train and test
+```{r}
+index <- sample(1:nrow(data),round(0.75*nrow(data)))
+#index <- createDataPartition(y= data$QLT, p=0.5, list = FALSE)
+maxs <- apply(data, 2, max) 
+mins <- apply(data, 2, min)
+scaled <- as.data.frame(scale(data, center = mins, scale = maxs - mins))
+train_ <- scaled[index,]
+test_ <- scaled[-index,]
+```
+
+# Clustering
+
+A fundamental question is how to determine the value of the parameter k. 
+If we looks at the percentage of variance explained as a function of the number of clusters: 
+One should choose a number of clusters so that adding another cluster doesnât give much better 
+modeling of the data. More precisely, if one plots the percentage of variance explained by the 
+clusters against the number of clusters, the first clusters will add much information 
+(explain a lot of variance), but at some point the marginal gain will drop, 
+giving an angle in the graph. The number of clusters is chosen at this point, hence the âelbow criterionâ.
+
+```{r}
+wssplot <- function(data, nc=15, seed=1234){
+  wss <- (nrow(data)-1)*sum(apply(data,2,var))
+  for (i in 2:nc){
+    set.seed(seed)
+    wss[i] <- sum(kmeans(data, centers=i)$withinss)}
+  plot(1:nc, wss, type="b", xlab="Number of Clusters",
+       ylab="Within groups sum of squares")}
+
+wssplot(scaled, nc=15) 
+```
+
+## Clustering using K-means method
+```{r  fig.height=10, fig.width=10}
+set.seed(420)
+clusters_num =5
+k.means.fit <- kmeans(scaled, clusters_num,iter.max = 1000)
+# attributes(k.means.fit)
+k.means.fit$centers
+# plot(k.means.fit$centers[,c("RS","ALC")])
+# k.means.fit$cluster
+k.means.fit$size
+```
+
+
+```{r fig.height=10, fig.width=10}
+library(cluster)
+clusplot(scaled, k.means.fit$cluster, main='2D representation of the Cluster solution',
+         color=TRUE, shade=FALSE,
+         labels=clusters_num, lines=0)
+```
+
+# Explain clusters
+
+## Explain by 'class' 
+
+Let's try to explain clusters by the 'class'. Code below builds a matrix whe columns are cluster numbers and rows are target classes.
+
+```{r}
+table(nursery_data$class,k.means.fit$cluster)
+```
+
+# Hierarchical Clustering
+
+Hierarchical methods uses a distance matrix as an input for the clustering algorithm. 
+The choice of an appropriate metric will influence the shape of the clusters, as some element
+may be close to one another according to one distance and farther away according to another.
+We use the Euclidean distance as an input for the clustering algorithm 
+ward.2D minimum variance criterion minimizes the total within-cluster variance:
+
+```{r}
+d <- dist(scaled, method = "euclidean")
+H.fit <- hclust(d, method="ward.D2")
+```
+
+The clustering output can be displayed in a dendrogram
+
+```{r dendr, fig.height=8, fig.width=8}
+clusters_num = 12
+plot(H.fit)
+groups <- cutree(H.fit, k=clusters_num)
+rect.hclust(H.fit, k=clusters_num, border="red") 
+```
+
+The clustering performance can be evaluated with the aid of a confusion matrix as follows:
+
+```{r}
+table(nursery_data$class,groups)
+```
