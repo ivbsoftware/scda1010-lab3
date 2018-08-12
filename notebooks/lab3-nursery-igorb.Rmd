@@ -223,8 +223,105 @@ print(dif)
 ```
 
 Group 5 has significant amount of 'very_recommend' values in addition to 'priority'. Let's find what are the most significant factors that separate group 5 from also mixed group 8. It looks that group a has more vavorable financial situation. We could arbitrary say that it is justified for relable group 1 down grading it to 'recommend' even thogh most of therows were previouslbeen labeled higher.
+
 ```{r}
 dif <- colMeans(scaled[groups == 5,]) - colMeans(scaled[groups == 9,])
 dif <- dif[order(abs(dif), decreasing = T)]
 print(dif)
+```
+
+Lets fix the group 1 by relabelling class to  'recommend'
+
+```{r}
+nursery_data[groups == 1,]$class<- 'recommend'
+
+```
+
+Lets analyze the result
+Visualize the distribution of class now. Obviosly  the distribution is improved compaired to previous data.  
+```{r}
+ggplot(data = nursery_data, mapping = aes(x = class)) + geom_bar()
+```
+Lets create training data
+```{r}
+train.rows<- createDataPartition(y= nursery_data$class, p=0.8, list = FALSE)
+train.data<- nursery_data[train.rows,]
+prop.table((table(train.data$class)))
+
+```
+Visualize the distribution of class on the training data
+```{r}
+ggplot(data = train.data, mapping = aes(x = class)) + geom_bar()
+
+```
+
+# Iterative data model fit and evaluation
+## Interation 1: Decision Tree model fit
+```{r}
+fitdt <- rpart(as.factor(class)~., method="class", data=train.data)
+```
+```{r fig.width=8, message=FALSE, warning=FALSE, paged.print=TRUE}
+fancyRpartPlot(fitdt)
+```
+
+Create test data
+
+```{r}
+test.data<- nursery_data[-train.rows,]
+```
+
+Lets see the result
+
+```{r}
+dtPrediction <- predict(fitdt, test.data, type = "class")
+head(dtPrediction,n=15)
+head(test.data,n=15)
+```
+Evaluate Decision Tree model
+```{r}
+confusionMatrix(data=dtPrediction,test.data$class)
+```
+##Interation 2: Random Forest Tree model fit with defaults
+```{r}
+library(randomForest)
+fitRF1 <- randomForest(as.factor(class)~.,
+                      data=train.data, 
+                      importance=TRUE, 
+                      ntree=1000)
+```
+
+### Checking what variables were important
+```{r}
+varImpPlot(fitRF1,main = "Importance of variables")
+```
+### Prediction with Randow Forest Iteration 1
+```{r}
+PredictionRF1 <- predict(fitRF1, test.data)
+head(PredictionRF1)
+```
+
+### Evaluation of prediction
+
+```{r}
+ confusionMatrix(data=PredictionRF1,test.data$class)
+```
+### Simple way to calculate accuracy
+```{r}
+confMat <- table(PredictionRF1,test.data$class)
+confMat
+accuracy <- sum(diag(confMat))/sum(confMat)
+cat(sprintf("\nAccuracy=%f", accuracy))
+```
+### Evaluate again - tr
+```{r}
+train_control <- trainControl(method="cv", number=10)
+set.seed(7)
+rpart.grid <- expand.grid(mtry = 5)
+kf_DT <- train(as.factor(class)~., train.data, method="rf", trControl=train_control,tuneGrid=rpart.grid)
+print(kf_DT)
+t_pred <- predict(kf_DT, test.data, type="raw")
+confMat <- table(PredictionRF1,test.data$class)
+confMat
+accuracy <- sum(diag(confMat))/sum(confMat)
+cat(sprintf("\nAccuracy=%f", accuracy))
 ```
