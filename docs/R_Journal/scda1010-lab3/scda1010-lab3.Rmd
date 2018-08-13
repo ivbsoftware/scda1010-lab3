@@ -1,5 +1,5 @@
 ---
-title: Ranking Applications for Nursery Schools - Relabelling Dataset using Clustering
+title: Ranking Applications for Nursery Schools - Relabeling Dataset using Clustering
 
 author: 
   - name          : "Viviane Adohouannon"
@@ -15,7 +15,7 @@ author:
     affiliation   : "York University School of Continuing Studies"
     email         : "https://learn.continue.yorku.ca/user/profile.php?id=21219"
 abstract: >
-  The specific problem under consideration is to rank selection of applicants for nursery schools in Ljubljana, Slovenia in the 1980's. Nursery Database was derived from a hierarchical decision model originally developed to rank applications. A classification model has been used to developed a reliable recomendation algorithm to predict if a specific applicant is a suitable candidate to be addmitted into a nursery school.
+  The specific problem under consideration is to rank selection of applicants for nursery schools in Ljubljana, Slovenia in the 1980's. Nursery Database was derived from a hierarchical decision model originally developed to rank applications. In this report the dataset was analyzed and the target value imbalance was corrected using clustering. Data was partially relabeled to correct underrepresented values of the target.
 output:
   rticles::rjournal_article:
     includes:
@@ -23,35 +23,30 @@ output:
 ---
 
 # Introduction
-In our 
-
-Early schooling such as Nursery school education matters most as it impacts children's long-term development and academic progress. While all children benefit from a high-quality nursery school, family structure, social and financial standing, and proximity to schools may affect the enrollment process. 
 
 Nursery dataset \citep{noauthor_uci_nodate} was derived from a hierarchical decision model originally developed to rank applications for nursery schools. It was used during several years in 1980's when there was excessive enrollment to these schools in Ljubljana, Slovenia, and the rejected applications frequently needed an objective explanation.
 
+Early schooling such as Nursery school education matters most as it impacts children's long-term development and academic progress. While all children benefit from a high-quality nursery school, family structure, social and financial standing, and proximity to schools may affect the enrollment process. 
+
 ## Background
 
-In our previous article \citep{scda1010_lab1} we explored the Nursery dataset and using a classification model to developed our algorithm to predict applicants suitabilty of an admittance within the nursery school system, the evaluation of the model was developed using Random Forest algorithm. Even though the original dataset was clear and did not have missing values, it was unballanced. To overcome this a method called Random Over-Sampling was appplied, which increased the number of instances in the minority class by randomly replicating them in order to present a higher representation of the minority class in the sample. The final model achieved almost 99% accuracy of predictions with overall balanced precision more that 97% accross all the predicted "class" values.
+In our previous report \citep{scda1010_lab1} we explored the Nursery dataset and using a classification model to developed our algorithm to predict applicants sutabilty of an admittance within the nursery school system, the evaluation of the model was developed using Random Forest algorithm. Even though the original dataset was clear and did not have missing values, it was unbalanced. To overcome this a method called Random Over-Sampling was appplied, which increased the number of instances in the minority class by randomly replicating them in order to present a higher representation of the minority class in the sample. The final model achieved almost 99% accuracy of predictions with overall balanced precision more that 97% accross all the predicted "class" values.
 
 Ljubljana is the capital and largest city of Slovenia. The city with an area of 163.8 square kilometers is situated in the Ljubljana Basin in Central Slovenia, between the Alps and the Karst. Ljubljana is located some 320 kilometers south of Munich, 477 kilometers  east of Zurich. In 1981 the population of the city rose to 224,817 inhabitants with approximately 91% of the population speaking Slovene as their primary native language. The second most-spoken language is Bosnian, with Serbo-Croatian being the third most-spoken language \citep{noauthor_ljubljana_2018}.
 
-During this time according to \citep{olave1989application} "new housing developments populated by young families, the demand for childrens admission in nursery schools outstrips supply, notwithstanding the fast growth rate of new schools." In this research, conducted in 1989, an application of expert systems for admission procedures in public
-school systems was presented. The specific problem under consideration was selection of applicants for public nursery schools. The selection was supported by an expert system which evaluates, classifies and ranks applications.
-The main emphasis was on explanation of the underlying knowledge and solutions, suggested by the system. The system has been developed using DECMAK, an expert system shell for multi-attribute decision making.
+During this time according to \citep{olave1989application} "new housing developments populated by young families, the demand for children's admission in nursery schools outstrips supply, notwithstanding the fast growth rate of new schools." In this research, conducted in 1989, an application of expert systems for admission procedures in public school systems was presented. The specific problem under consideration was selection of applicants for public nursery schools. The selection was supported by an expert system which evaluates, classifies and ranks applications. Another research was made later in 1997 \citep{zupan1997machine}, slightly improving the original algorithm. Both researches were modeling the original dataset without any attempts to challege it's correctness. 
 
-In continuation of the search for the practical solution of the problem, second most relevant research was conducted in 1997 \citep{zupan1997machine}. It presented another machine learning method that, given a set of training examples, induced
-a definition of the target concept in terms of a hierarchy of intermediate concepts and their definitions. This effectively decomposed the problem into smaller, less complex problems. The method was inspired by the Boolean function decomposition approach to the design of digital circuits. To cope with high time complexity of inding an optimal decomposition,
-the authors proposed a suboptimal heuristic algorithm.
+It was thought, after presenting of our previous report, that the labeling of the Nursery dataset was affected by human bios, resulting in most labels to be given as extreme - only 'not recommend' or 'highly recommend' suggestions were made. The middle values are almost not presented. It is very important for the algorithm to be more objective, since the proper recommendation would help produce much more fair results and help properly distrubute such a limited resource as a nursing school placement. 
 
-It worth to notice that in both cases the researches concentrated on designing and theoretical evaluation of mentioned algorithms without proposing a practical solution that could be deployed in the municipalities and put in use. The reason of this was a relatively high  at the time price of computers that could make predictictions with the models proposed.
+\newpage
 
 ## Objective
-The objective of this article is to provide a reliable and feasible recommendation algorithm to predict if a specific applicant is a suitable candidate to be admitted into a nursery school or if the applicant should stay with their parents. The results of this recommendation may affect the childs engagement within the school, parents involvement in school activities and overall satisfaction of the applicants long-term academic progress.
+The objective of this report is to provide a reliable and feasible recommendation algorithm to correct the discovered previously imbalance of the dataset "class" target value. The results of this recommendation may affect the childs engagement within the school, parents involvement in school activities and overall satisfaction of the applicants long-term academic progress.
   
 ## Plan
-To solve the objective a group of four students calling themselves The First Group (T.F.G) from York University School of Continuing Studies, have come together to create an algorithm using the Nursery dataset. Since the target of this problem is a categorical value representing recommendation if a child is suitable for the admittance to a nursery school, a  supervised classification algorithm was chosen \citep{witten_data_2011}.
+To solve the objective a group of four students calling themselves The First Group (T.F.G) from York University School of Continuing Studies, have come together to relabel the Nursery dataset. The idea was to use clustering methods, for instance \citep{noauthor_k-means_2018}, to group observation in such a way that would allow us to make a conscious decision of the dataset relabeling.
 
-The main tool used in developing the recomendation algorithm is R \citep{R}. The R language is widely used among statisticians and data miners for developing statistical software and data analysis.
+The main tool used in developing was R \citep{R}. The R language is widely used among statisticians and data miners for developing statistical software and data analysis.
 
 # Data understanding
 The dataset \citep{noauthor_uci_nodate} has 8 attributes and 12960 instances. Creators of the dataset suggested hierarchical model ranks nursery-school applications according to the following concept structure: 
@@ -90,6 +85,7 @@ Target attribute called "class" is a categorical variable having several values 
 \newpage
 
 # Data Preparation
+## Data loading and summary
 To perform the analysis, certain R libraries were used. The code below was used to load and initialize the libraries. The first line invoking seed function was applied to enforce the repeatability of the calculation results.
 
 ```{r message=FALSE, warning=FALSE}
@@ -115,20 +111,12 @@ nursery_data <- read.csv(
     c("parents","has_nurs","form","children","housing","finance","social","health","class"))
 ```
 
-
 ```{r eval=FALSE, message=FALSE, warning=FALSE, include=FALSE, paged.print=FALSE}
 # A backup method of loading the dataset in case the site is down
 library(readr)
 nursery_data <- read.csv(file = "../../../data/nursery_data.csv", 
   colClasses=c("NULL",NA,NA,NA,NA,NA,NA,NA,NA,NA))
 ```
-
-Thise are the dimensions of our dataset:
-
-```{r message=FALSE, warning=FALSE}
-dim(nursery_data)
-```
-
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, results='asis'}
 library(xtable)
@@ -147,10 +135,13 @@ Summary of Nursery Data set is extracted by the R summary function, the results 
 summary(nursery_data)
 ```
 
+\newpage
 
-## Reordering Dataset Factor Leveks
+## Fixing Dataset Factor Levels
 
-Very often, especially when plotting data, we need to reorder the levels of a factor because the default order is alphabetical. A direct way of reordering, using standard syntax is as follows. Current levels, need to be corrected to correspont to the dataset description.
+Very often, especially when plotting data and applying clustering algorithms, we need to reorder the levels of a factor because the default order is alphabetical.  Current levels need to be corrected to correspond to the dataset description.
+
+### Current levels
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 print (levels(nursery_data$parents))
@@ -164,7 +155,9 @@ print (levels(nursery_data$health))
 print (levels(nursery_data$class))
 ```
 
-Correction:
+### Correction of levels
+
+A direct way of reordering, using standard syntax is as follows:
 
 ```{r}
 nursery_data$parents <- factor(nursery_data$parents,levels(nursery_data$parents)[c(3,2,1)])
@@ -178,7 +171,9 @@ nursery_data$health <- factor(nursery_data$health,levels(nursery_data$health)[c(
 nursery_data$class <- factor(nursery_data$class,levels(nursery_data$class)[c(1,3,5,2,4)])
 ```
 
-Corrected levels, now correspond to the dataset description:
+### Fixed levels
+
+Here are the corrected levels, now they correspond to the dataset description:
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 print (levels(nursery_data$parents))
@@ -192,53 +187,67 @@ print (levels(nursery_data$health))
 print (levels(nursery_data$class))
 ```
 
-## Convert to numbers in one step
+\newpage
 
-Return the matrix obtained by converting all the variables in a data frame to numeric mode and then binding them together as the columns of a matrix. Factors and ordered factors are replaced by their internal codes. Logical and factor columns are converted to integers. 
+## Convert to numbers
 
-```{r}
+In order to use clustering algorithms, the data should be transformed from categorical to numeric and normalized. First we obtain the numbers matrix by converting all the variables in a data frame to numeric mode and then binding them together as the columns of a matrix. Factors and ordered factors are replaced by their internal codes. Logical and factor columns are converted to integers (Table \ref{table:dhead12}). 
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, results='asis'}
 data <- data.matrix(nursery_data)
-head(data)
+xtable(head(data, n = 15),
+  caption = "\\tt Nursery Data Dataset in numeric format (head)", label = "table:dhead12")
 ```
 
 ## Preparing scaled data
+
+In order to use clustering algorithms, the data should be normalized. The following code performs the scaling to 0:1 range and prints the head of the datatset (Table \ref{table:dhead21}):
+
 ```{r}
-#index <- sample(1:nrow(data),round(0.75*nrow(data)))
-#index <- createDataPartition(y= data$QLT, p=0.5, list = FALSE)
 maxs <- apply(data, 2, max) 
 mins <- apply(data, 2, min)
 scaled <- as.data.frame(scale(data, center = mins, scale = maxs - mins))
-#train_ <- scaled[index,]
-#test_ <- scaled[-index,]
 ```
 
-# The problem
-
-## Distribution of target value in the dataset
-The target value class of the wine quality is not equally distributed. The Figure \ref{fig:hist_class} demonstrates the distribution. As we can see, dataset covers mostly medium-quality wines with QLT between 5 and 7 well, low and high  quality wines represented poorly.
-```{r}
-prop.table(table(nursery_data$class))
+```{r echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, results='asis'}
+data <- data.matrix(nursery_data)
+xtable(head(scaled, n = 15),
+  caption = "\\tt Scaled Nursery Data Dataset in numeric format (head)", label = "table:dhead21")
 ```
 
+\newpage
+
+# Data Relabeling
+
+## The problem analysis
+The target value class of the the nursery dataset is not equally distributed (Table \ref{table:dhead11}). The Figure \ref{fig:hist_class} demonstrates the distribution graphically. As we can see, dataset covers mostly extreme values, middle valuesare represented poorly.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, results='asis'}
+t <- xtable(prop.table(table(nursery_data$class)),
+  caption = "\\tt Nursery Data Dataset in numeric format (head)", label = "table:dhead11")
+print(t, include.colnames=F)
+```
 
 ```{r hist_class, fig.pos = 'h', fig.height=3, fig.width=5, fig.align="center", fig.cap="Distribution the Target 'class' Attribute in the Nursery Dataset"}
 ggplot(data = nursery_data, mapping = aes(x = class)) + geom_bar()
 ```
 
+It was thought, that the labeling of the Nursery dataset was affected by human bios, resulting in most labels to be given as extreme - mostly 'not _recom', 'priority' and 'special_priority' suggestions were made.
+
+One of the ways to solve this issue is to use cluster analysis, for instance K-Means method \citep{noauthor_k-means_2018}, to group observation in such a way that would allow us to make a conscious decision of the dataset relabeling. 
+
+In centroid-based clustering, clusters are represented by a central vector, which may not necessarily be a member of the data set. When the number of clusters is fixed to k, k-means clustering gives a formal definition as an optimization problem: find the k cluster centers and assign the objects to the nearest cluster center, such that the squared distances from the cluster are minimized.
+
 \newpage
 
-# Clustering
+## Preparation for cluster analysis
 
-A fundamental question is how to determine the value of the parameter k. 
-If we looks at the percentage of variance explained as a function of the number of clusters: 
-One should choose a number of clusters so that adding another cluster doesn't give much better 
-modeling of the data. More precisely, if one plots the percentage of variance explained by the 
-clusters against the number of clusters, the first clusters will add much information 
-(explain a lot of variance), but at some point the marginal gain will drop, 
-giving an angle in the graph. The number of clusters is chosen at this point, hence the 'elbow criterion'.
-The diagram presented in Figure \ref{fig:elbow}
+First we need to determine number of clusters. 
+Looking at the percentage of variance explained as a function of the number of clusters, we should choose a number of clusters so that adding another cluster doesn't give much better modeling of the data. More precisely, if one plots the percentage of variance explained by the 
+clusters against the number of clusters, the first clusters will add much information  (explain a lot of variance), but at some point the marginal gain will drop, giving an angle in the graph. The number of clusters is chosen at this point. This method is called the 'elbow criterion'.
+The diagram presented in Figure \ref{fig:elbow} demonstrates the 'elbow' curve. From this diagram we decided to use 5 clusters in our analysis.
 
-```{r elbow,  fig.height=6, fig.width=5.5, message=FALSE, warning=FALSE, fig.cap="Elbow Criterion Diagram"}
+```{r elbow,  fig.height=4, fig.width=5.5, message=FALSE, warning=FALSE, fig.cap="Elbow Criterion Diagram"}
 wssplot <- function(data, nc=15, seed=1234){
   wss <- (nrow(data)-1)*sum(apply(data,2,var))
   for (i in 2:nc){
@@ -247,7 +256,7 @@ wssplot <- function(data, nc=15, seed=1234){
   plot(1:nc, wss, type="b", xlab="Number of Clusters",
        ylab="Within groups sum of squares")}
 
-wssplot(scaled, nc=15) 
+wssplot(scaled, nc=7) 
 ```
 
 ## Clustering using K-means method
@@ -256,14 +265,27 @@ k-means clustering \citep{noauthor_k-means_2018} is a method of vector quantizat
 
 The problem is computationally difficult (NP-hard), k-means clustering tends to find clusters of comparable spatial extent, while the expectation-maximization mechanism allows clusters to have different shapes. The algorithm has a loose relationship to the k-nearest neighbor classifier. One can apply the 1-nearest neighbor classifier on the cluster centers obtained by k-means to classify new data into the existing clusters. This is known as nearest centroid classifier or Rocchio algorithm.
 
+Resulting cluster centers are presented in Table \ref{table:kcent1}.
 
 ```{r  fig.height=10, fig.width=10}
 set.seed(420)
 clusters_num =5
 k.means.fit <- kmeans(scaled, clusters_num,iter.max = 1000)
-attributes(k.means.fit)
-k.means.fit$centers
+#attributes(k.means.fit)
+#k.means.fit$centers
 k.means.fit$size
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, results='asis'}
+#library(xtable)
+#options(xtable.floating = TRUE)
+#options(xtable.timestamp = "")
+#options(xtable.comment = FALSE)
+
+dh.rescale <- xtable(k.means.fit$centers,
+  caption = "\\tt K-means Resulting Cluster Centers", label = "table:kcent1")
+
+print(dh.rescale, scalebox=1)
 ```
 
 
@@ -274,95 +296,134 @@ clusplot(scaled, k.means.fit$cluster, main='',
          labels=clusters_num, lines=0)
 ```
 
-# Explain clusters
+## Analysis of clusters by 'class' attribute
 
-## Explain by 'class' 
+Let's try to explain clusters by the 'class'. Code below builds a matrix where columns are cluster numbers and rows are target classes. Result of that presented in Table \ref{table:expcl1}. Cluster 1 contains only rows with 'not_recom' class. Class 5 contain only rows with 'not_recom' and both 'recommend' rows presented in the dataset. Clusters 2,3, and 4 have the rest of the 'class' values. It is not possible to increase groups 'recommed' and 'highly_recom' by relabeling other rows. It looks that k-means can't help us in solving of the problem since the clusters obviously not defined the 'class' attribute.
 
-Let's try to explain clusters by the 'class'. Code below builds a matrix whe columns are cluster numbers and rows are target classes.
 
-```{r}
-table(nursery_data$class,k.means.fit$cluster)
+```{r echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, results='asis'}
+#library(xtable)
+#options(xtable.floating = TRUE)
+#options(xtable.timestamp = "")
+#options(xtable.comment = FALSE)
+
+dh.rescale <- xtable(table(nursery_data$class,k.means.fit$cluster),
+  caption = "\\tt K-means Resulting Cluster Centers", label = "table:expcl1")
+
+print(dh.rescale, scalebox=1)
 ```
 
-# Hierarchical Clustering
+
+## Hierarchical Clustering
 
 k-means algorithm is not very flexible, and as such is of limited use (except for when vector quantization as above is actually the desired use case). In particular, the parameter k is known to be hard to choose (as discussed above) when not given by external constraints. Another limitation of the algorithm is that it cannot be used with arbitrary distance functions or on non-numerical data.
 
-Hierarchical methods uses a distance matrix as an input for the clustering algorithm. 
-The choice of an appropriate metric will influence the shape of the clusters, as some element
-may be close to one another according to one distance and farther away according to another.
-We use the Euclidean distance as an input for the clustering algorithm 
-ward.2D minimum variance criterion minimizes the total within-cluster variance.
+Another approach, called connectivity-based clustering, also known as hierarchical clustering, is based on the core idea of objects being more related to nearby objects than to objects farther away. These algorithms connect "objects" to form "clusters" based on their distance. A cluster can be described largely by the maximum distance needed to connect parts of the cluster. At different distances, different clusters will form, which can be represented using a dendrogram, which explains where the common name "hierarchical clustering" comes from: these algorithms do not provide a single partitioning of the data set, but instead provide an extensive hierarchy of clusters that merge with each other at certain distances. In a dendrogram, the y-axis marks the distance at which the clusters merge, while the objects are placed along the x-axis such that the clusters don't mix. 
+
+Hierarchical methods uses a distance matrix as an input for the clustering algorithm. The choice of an appropriate metric will influence the shape of the clusters, as some element may be close to one another according to one distance and farther away according to another. 
+
+We use the Manhattan distance as an input for the clustering algorithm 
+ward.2D minimum variance criterion minimizes the total within-cluster variance. The reason for that is that we essentually analyzing a categorical dataset where even scaled data has grouped values, not like in a naturally numeric dataset. 
+
+After several tries we decided to set a number of clusters to 20 to make them small, but allowing us reliably separate records by 'class' attribute. The code performing hierarchical clustering presented below. Visualization of clustering is displayed in a dendrogram in Figure \ref{fig:dendr}.
 
 ```{r}
 d <- dist(scaled, method = "manhattan")
 H.fit <- hclust(d, method="ward.D2")
 ```
 
-The clustering output is displayed in a dendrogram \ref{fig:dendr}.
-
-```{r dendr, fig.height=9, fig.hight=8, fig.width=6, message=FALSE, warning=FALSE}
+```{r dendr, fig.height=9, message=FALSE, warning=FALSE, fig.cap="Visual Presentation of a Cluster Denrogram"}
 clusters_num = 20
 plot(H.fit)
 groups <- cutree(H.fit, k=clusters_num)
 rect.hclust(H.fit, k=clusters_num, border="red") 
 ```
 
-The clustering performance can be evaluated with the aid of a confusion matrix as follows. Let's look at the groups that have mixed valued of 'class'. Group 1 contains class 'recommend' and also 'very_recom' and 'priority'. Since our idea is relable rows to 'recommend' to increase it's presense, let's check if there is any justification to do this.
+## Analysis of Hierarchical Clustering results
 
+The clustering performance can be evaluated with the aid of a confusion matrix as shown in Table \ref{table:groups2}. Let's look at the groups that have mixed valued of 'class'. Group 1 contains class 'recommend' and also 'very_recom' and 'priority'. Since our idea is relabel rows to 'recommend' to increase its presense, let's check if there is any justification to do this.
 
-```{r}
-table(nursery_data$class,groups)
+```{r echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, results='asis'}
+xtable(table(nursery_data$class,groups)[,1:10])
+xtable(table(nursery_data$class,groups)[,11:20], caption = "\\tt Cluster group centers", label = "table:groups2")
 ```
 
-Let's find what are the most significant factors that separate group 1 from also mixed group 5. It looks that group has better financial situation but 22% less favorable family structure and 12% better housing situation, with the rest of the attributes beeing close - less that 1%. We could arbitrary decide that it is justified to downgade group 1 grading all the fows to 'recommend' even thogh most of the rows were previously been labeled higher.
+
+Let's find what are the most significant factors that separate group 1 from also mixed group 5. Code below calculates the differenc, results presented in Table \ref{table:dif1}. It looks that group has better financial situation but 22% less favorable family structure and 12% better housing situation, with the rest of the attributes beeing close - less that 1%. We could arbitrary decide that it is justified to downgrade group 1 grading all the rows to 'recommend' even though most of the rows were previously been labeled higher.
 
 ```{r}
-dif <- colMeans(scaled[groups == 1,]) - colMeans(scaled[groups == 5,])
-dif <- dif[order(abs(dif), decreasing = T)]
-print(dif)
+Difference <- colMeans(scaled[groups == 1,]) - colMeans(scaled[groups == 5,])
+Difference <- Difference[order(abs(Difference), decreasing = T)]
 ```
 
-Group 5 has high amount of 'very_recommend' values in addition to 'priority' and some 'special_priority'. Let's find what are the most significant factors that separate group 5 from also mixed similar group 9. Looking at the most influential attribus defining the difference between those groups, it looks that group 5 has less favorable financial situation, but 50% better housing situation and 30% better formal family structure. Again we could arbitrary decide that it is justified to downgrade group 5 down grading all the records in the group as 'very_recommend' even though most of the rows were previously been labeled higher.
+```{r echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, results='asis'}
+dh.rescale <- xtable(data.frame(Difference),
+  caption = "\\tt Difference between Clusters 1 and 5", label = "table:dif1")
+print(dh.rescale, scalebox=1)
+```
+
+Group 5 has high amount of 'very_recommend' values in addition to 'priority' and some 'special_priority'. Let's find what are the most significant factors that separate group 5 from also mixed similar group 9.
+Results of the calculations presented in Table \ref{table:dif2}.
 
 ```{r}
-dif <- colMeans(scaled[groups == 5,]) - colMeans(scaled[groups == 9,])
-dif <- dif[order(abs(dif), decreasing = T)]
-print(dif)
+Difference <- colMeans(scaled[groups == 5,]) - colMeans(scaled[groups == 9,])
+Difference <- Difference[order(abs(Difference), decreasing = T)]
 ```
 
-Lets fix the groups 1 and 5 by relabelling class according to our conclusions:
+Looking at the most influential attributes defining the difference between those groups, it looks that group 5 has less favorable financial situation, but 50% better housing situation and 30% better formal family structure. Again we could arbitrary decide that it is justified to downgrade group 5 down grading all the records in the group as 'very_recommend' even though most of the rows were previously been labeled higher.
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, results='asis'}
+dh.rescale <- xtable(data.frame(Difference),
+  caption = "\\tt Difference between Clusters 5 and 9", label = "table:dif2")
+print(dh.rescale, scalebox=1)
+```
+
+## Relableling of the Nursery dataset
+
+Lets fix the groups 1 and 5 by Relabeling  class according to our conclusions:
 
 ```{r}
 nursery_data[groups == 1,]$class<- 'recommend'
 nursery_data[groups == 5,]$class<- 'very_recom'
 ```
 
-Lets analyze the result visualizing the distribution of class now. Obviosly  the distribution is improved compaired to previous data.  
+Lets analyze the result visualizing the distribution of class now. Obviosly  the distribution is improved compaired to previous data (Table \ref{table:dhead14}).  
 
-```{r}
-prop.table(table(nursery_data$class))
+```{r echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, results='asis'}
+t <- xtable(prop.table(table(nursery_data$class)),
+  caption = "\\tt Distribution the target 'class' after relabelling", label = "table:dhead14")
+print(t, include.colnames=F)
 ```
 
 ```{r hist2_class, fig.pos = 'h', fig.height=3, fig.width=5, fig.align="center", fig.cap="Distribution the Target 'class' Attribute in the Nursery Dataset"}
 ggplot(data = nursery_data, mapping = aes(x = class)) + geom_bar()
 ```
 
-# Modeling
+# Modeling of the Relabeled dataset
 
-## Random Forest model prediction and evaluation of the original dataset
-
-The Nursery dataset has been split in such a way that train and test sets would have the same distribution of the 'class' attribute. The reason for this stratification strategy is to focus on the priority of an applicants placement in a nursery school rather than an applicants family or social status. We used 75:25 split ratio. 
+The Nursery dataset has been split in such a way that train and test sets would have the same distribution of the 'class' attribute (Tables \ref{table:dhead15} and \ref{table:dhead16}). The reason for this stratification strategy is to focus on the priority of an applicants placement in a nursery school rather than an applicant's family or social status. We used 75:25 split ratio. 
 
 ```{r}
 train.rows<- createDataPartition(y= nursery_data$class, p=0.75, list = FALSE)
 train.data<- nursery_data[train.rows,]
-prop.table((table(train.data$class)))
+```
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, results='asis'}
+t <- xtable(prop.table((table(train.data$class))),
+  caption = "\\tt Distribution the target 'class' in the train dataset", label = "table:dhead15")
+print(t, include.colnames=F)
 ```
 
 ```{r}
 test.data<- nursery_data[-train.rows,]
-prop.table((table(test.data$class)))
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, results='asis'}
+t <- xtable(prop.table((table(test.data$class))),
+  caption = "\\tt Distribution the target 'class' in the test dataset", label = "table:dhead16")
+print(t, include.colnames=F)
 ```
 
 ```{r message=FALSE, warning=FALSE}
@@ -373,20 +434,22 @@ fitRF2 <- randomForest(
   data=train.data, importance=TRUE, ntree=1000 )
 ```
 
-Now let's calculate prediction and it's evaluation using the corrected dataset. As we expected, now all but one of the "very_recom" values of the target "class" attribute were predicted correctly which led to total accuracy of the prediction to 98% with overall balanced precision accross all the predicted "class" values.
+Now let's calculate prediction and it's evaluation using the corrected dataset. The code below calculates the predictions, the results are presented in Table \ref{table:confMat2}. As we expected, 90% of all the "recommend" and "very_recom" values of the target "class" attribute were predicted correctly which led to total accuracy of the prediction to 98% with overall balanced precision across all the predicted "class" values. We could notice that this results is similar to accuracy of the original dataset in our previous report \citep{scda1010_lab1}, but current model has very good precision in the 'recommend' and 'highly_recom'. The dataset correction allowed the RF algorithm to perform well without performing any tricks to fix imbalanced datasets like suggested here \citep{noauthor_how_2017}.
 
 ```{r}
 PredictionRF2 <- predict(fitRF2, test.data)
 confMat2 <- table(PredictionRF2,test.data$class)
-confMat2
 accuracy <- sum(diag(confMat2))/sum(confMat2)
 cat(sprintf("\nAccuracy=%f", accuracy))
 ```
 
+```{r echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, results='asis'}
+xtable(confMat2, caption = "\\tt Random Forest Pledictor Confusion Matrix", label = "table:confMat2")
+```
 
-To visualize the results of the predictions, the code below generates a scatter plot of the Predictor vs Test values (Figure \ref{fig:plot_rf_rw}). Also a QQ-Plot for Studentized Residuals is generated and presented in Figure \ref{fig:qq_rf_rw}.
+To visualize the results of the predictions, the code below generates a scatter plot of the Predictor vs Test values (Figure \ref{fig:plot_rf_rw}).
 
-```{r plot_rf_rw, fig.width=5.5, fig.align="center", message=FALSE, warning=FALSE, paged.print=FALSE, fig.cap="Random Forest Prediction"}
+```{r plot_rf_rw, fig.width=5.5, fig.align="center", message=FALSE, warning=FALSE, paged.print=FALSE, fig.cap="Random Forest Prediction Scatter Plot"}
 library(ggplot2)
 df2 = data.frame(test.data$class, PredictionRF2)
 colnames(df2) <- c("Test","Prediction")
@@ -394,13 +457,15 @@ ggplot(df2, aes(x = Test, y = Prediction)) +
         geom_jitter(width = 0.2, pch=20, col=rgb(0.1, 0.2, 0.8, 0.3))
 ```
 
-
 \newpage
+
 # Conclusion
-Through exploring the Nursery dataset and using a classification model to developed our algorithm to predict applicants suitabilty of an admittance within the nursery school system, the evaluation of the model was developed using Random Forest algorithm. Even though the original dataset was clear and did not have missing values, it was unballanced. To overcome this a method called Random Over-Sampling was appplied, which increased the number of instances in the minority class by randomly replicating them in order to present a higher representation of the minority class in the sample. The final model achieved almost 99% accuracy of predictions with overall balanced precision more that 97% accross all the predicted "class" values. The project was a success.
+Through exploring the Nursery dataset and using clustering analysis we were able to fix the dataset target value 'class' imbalance. Data was partially relabeled to correct underrepresented values of the target.
+As the result, 90% of all the "recommend" and "very_recom" values of the target "class" attribute were predicted correctly which led to total accuracy of the prediction to 98% with overall balanced precision across all the predicted "class" values. Modeling the corrected dataset we achieved results that are similar to accuracy of the original dataset in our previous report \citep{scda1010_lab1}, but current model has very good precision in the 'recommend' and 'highly_recom'. The dataset correction allowed the RF algorithm to perform well without performing any tricks to fix imbalanced datasets. The project was a success.
 
 \bibliography{RJreferences}
 
 \newpage
+
 # Note from the Authors
 This file was generated using [_The R Journal_ style article template](https://github.com/rstudio/rticles), additional information on how to prepare articles for submission is here - [Instructions for Authors](https://journal.r-project.org/share/author-guide.pdf). The article itself is an executable R Markdown file that could be [downloaded from Github](https://github.com/ivbsoftware/scda1010-lab3/tree/master/docs/R_Journal/scda1010-lab3) with all the necessary artifacts.
